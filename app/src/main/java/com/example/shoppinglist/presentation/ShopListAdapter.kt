@@ -20,9 +20,16 @@ class ShopListAdapter :
             else -> throw RuntimeException("Unknown view type: $viewType")
         }
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-        return ShopItemViewHolder(view)
+        val viewHolder = ShopItemViewHolder(view)
+        viewHolder.view.setOnLongClickListener {
+            onShopItemLongClickListener?.invoke(getItem(viewHolder.adapterPosition))
+            true
+        }
+        viewHolder.view.setOnClickListener {
+            onShopItemClickListener?.invoke(getItem(viewHolder.adapterPosition))
+        }
+        return viewHolder
     }
-
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
@@ -31,26 +38,17 @@ class ShopListAdapter :
         } else {
             VIEW_TYPE_DISABLED
         }
-
     }
 
     override fun onBindViewHolder(viewHolder: ShopItemViewHolder, position: Int) {
         val shopItem = getItem(position)
         viewHolder.tvName.text = shopItem.name
         viewHolder.tvCount.text = shopItem.count.toString()
-        viewHolder.view.setOnLongClickListener {
-            onShopItemLongClickListener?.invoke(shopItem)
-            true
-        }
-        viewHolder.view.setOnClickListener {
-            onShopItemClickListener?.invoke(shopItem)
-        }
     }
-
 
     companion object {
         const val VIEW_TYPE_ENABLED = 100
         const val VIEW_TYPE_DISABLED = 101
-        const val MAX_POOL_SIZE = 15
+        const val MAX_POOL_SIZE = 30
     }
 }

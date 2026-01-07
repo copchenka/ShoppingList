@@ -8,11 +8,11 @@ import com.example.shoppinglist.domain.AddShopItemUseCase
 import com.example.shoppinglist.domain.EditShopItemUseCase
 import com.example.shoppinglist.domain.GetShopItemUseCase
 import com.example.shoppinglist.domain.ShopItem
-import com.google.android.material.textfield.TextInputLayout.LengthCounter
 
 class ShopItemViewModel : ViewModel() {
 
     private val repository = ShopListRepositoryImpl
+
     private val getShopItemUseCase = GetShopItemUseCase(repository)
     private val addShopItemUseCase = AddShopItemUseCase(repository)
     private val editShopItemUseCase = EditShopItemUseCase(repository)
@@ -44,7 +44,8 @@ class ShopItemViewModel : ViewModel() {
         val count = parseCount(inputCount)
         val fieldValid = validateInput(name, count)
         if (fieldValid) {
-            addShopItemUseCase.addShopItem(ShopItem(name, count, true))
+            val shopItem = ShopItem(name, count, true)
+            addShopItemUseCase.addShopItem(shopItem)
             finishWork()
         }
     }
