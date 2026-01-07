@@ -16,7 +16,9 @@ import com.example.shoppinglist.domain.ShopItem
 import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemFragment : Fragment() {
+
     private lateinit var viewModel: ShopItemViewModel
+
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
     private lateinit var tilName: TextInputLayout
@@ -54,7 +56,7 @@ class ShopItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         initViews(view)
-        addTextChangeTextListeners()
+        addTextChangeListeners()
         launchRightMode()
         observeViewModel()
     }
@@ -69,7 +71,6 @@ class ShopItemFragment : Fragment() {
             }
             tilCount.error = message
         }
-
         viewModel.errorInputName.observe(viewLifecycleOwner) {
             val message = if (it) {
                 getString(R.string.error_input_name)
@@ -90,7 +91,7 @@ class ShopItemFragment : Fragment() {
         }
     }
 
-    private fun addTextChangeTextListeners() {
+    private fun addTextChangeListeners() {
         etName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -101,7 +102,6 @@ class ShopItemFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {
             }
-
         })
         etCount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -113,7 +113,6 @@ class ShopItemFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {
             }
-
         })
     }
 
@@ -135,21 +134,19 @@ class ShopItemFragment : Fragment() {
     }
 
     private fun parseParams() {
-        val args = requireArguments()
+        val args = arguments ?: throw RuntimeException("Required arguments is absent")
         if (!args.containsKey(SCREEN_MODE)) {
-            throw RuntimeException("Param screen mode is absent")
+            throw RuntimeException("Attribute screen mode is absent")
         }
         val mode = args.getString(SCREEN_MODE)
         if (mode != MODE_EDIT && mode != MODE_ADD) {
             throw RuntimeException("Unknown screen mode $mode")
         }
         screenMode = mode
-        if (screenMode == MODE_EDIT) {
-            if (!args.containsKey(SHOP_ITEM_ID)) {
-                throw RuntimeException("Param shop item id is absent")
-            }
-            shopItemId = args.getInt(SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
+        if (screenMode == MODE_EDIT && !args.containsKey(SHOP_ITEM_ID)) {
+            throw RuntimeException("Param shop item id is absent")
         }
+        shopItemId = args.getInt(SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
     }
 
     private fun initViews(view: View) {
@@ -158,7 +155,6 @@ class ShopItemFragment : Fragment() {
         etName = view.findViewById(R.id.et_name)
         etCount = view.findViewById(R.id.et_count)
         buttonSave = view.findViewById(R.id.save_button)
-
     }
 
     interface OnEditingFinishedListener {

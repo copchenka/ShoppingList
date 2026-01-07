@@ -8,6 +8,7 @@ import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
 
 class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
+
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = ShopItem.UNDEFINED_ID
 
@@ -15,9 +16,7 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
         parseIntent()
-        if (savedInstanceState == null) {
             launchRightMode()
-        }
     }
 
     override fun onEditingFinished() {
